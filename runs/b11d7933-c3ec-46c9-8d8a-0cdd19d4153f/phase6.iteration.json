@@ -1,0 +1,10 @@
+{
+  "changeLog": [
+    "Frame 1: Replaced text placeholders with geometric shapes (Glass, Water, Pencil) to visualize the concept.",
+    "Frame 1: Reduced wait time from 6s to 5s to account for transition durations.",
+    "Frame 3: Changed On-Screen Text arrangement to horizontal to match the split-screen visual description.",
+    "Frame 3: Increased wait time to 14s (target 15s minus transitions) to accommodate voiceover length.",
+    "Frame 5: Added 'Drag Force' text to On-Screen Text to label the forces involved.",
+    "Frame 7: Increased wait time to 19s (target 20s minus transitions) to accommodate the summary voiceover."
+  ]
+}

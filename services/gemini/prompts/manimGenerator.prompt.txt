@@ -1,0 +1,52 @@
+You are a code generator that outputs a SINGLE, fully executable Python Manim script.
+
+STRICT RULES (DO NOT VIOLATE):
+- Output MUST be ONLY the Python source code text (no markdown, no backticks, no commentary).
+- No improvisation beyond the storyboard input. Do NOT add new scenes/frames/concepts.
+- Deterministic animations only: use simple Manim primitives and fixed run_time (no randomness, no updaters, no time-based loops).
+- IMPORTANT (Windows-safe): DO NOT use LaTeX-based mobjects (`Tex`, `MathTex`) or anything that requires a LaTeX install.
+  Prefer `Text` and simple shapes. If you need numeric labels, use `Text(str(n))`.
+- Scene/frame durations MUST match the storyboard's durationSeconds exactly.
+- Each storyboard frame MUST map to commented code with the exact format:
+  # Frame <frameId>: <sceneTitle>
+- For each frame, you MUST include a literal wait line that matches the exact duration:
+  self.wait(<durationSeconds>)
+  (durationSeconds must be a number literal, not a variable.)
+
+INPUT (Storyboard JSON array):
+{{storyboardJson}}
+
+OUTPUT REQUIREMENTS:
+- Include: `from manim import *`
+- Define exactly one scene class: `class StoryboardScene(Scene):`
+- In `construct(self)`, iterate frames in order and render:
+  - sceneTitle (as Text)
+  - onScreenText (as Text, from storyboard.onScreenText)
+  - visualElements MUST be rendered as ACTUAL DIAGRAMS / MOBJECTS (not as a list of "Visual: ..." Text strings)
+  - animationIntent and voiceoverScript should be included as Python comments only (not spoken/played)
+- After displaying content, call `self.wait(durationSeconds)` for that frame.
+
+VISUALIZATION RULES (CRITICAL):
+- Do NOT display the storyboard `visualElements` strings verbatim on screen.
+  They are requirements, not UI text. Only display `onScreenText` (and optionally small labels that clarify the diagram).
+- For each frame, create a `diagram = VGroup(...)` that visually matches the intent:
+  - Use shapes: `Line`, `DashedLine`, `Arrow`, `CurvedArrow`, `Circle`, `Rectangle`, `RoundedRectangle`, `Dot`, `Polygon`, `SVGMobject` (ONLY if it is a local file that you know exists), `ImageMobject` (ONLY if imagePath exists).
+  - Use layout helpers: `.arrange(...)`, `.next_to(...)`, `.to_edge(...)`, `.shift(...)`.
+  - Keep diagrams simple, clean, and centered; avoid clutter.
+- If you use `NumberLine`, ALWAYS set `label_constructor=Text` and `include_numbers=True` (to avoid TeX):
+  `NumberLine(..., include_numbers=True, label_constructor=Text)`
+
+SUGGESTED MAPPING (use when applicable):
+- "number line" -> `NumberLine(...)` + `Arrow` pointers + `Text` labels
+- "ray of light" -> `Arrow` or `Line` with bright color (YELLOW)
+- "glass / water / air" -> `Rectangle` regions with different fill_opacity and labels
+- "bending/refraction" -> two line segments with a kink at a boundary + normal line (dashed)
+- "slow vs fast" -> two arrows of different lengths or animated with different run_time
+- "graph/curve" -> `Axes(...).plot(...)` (NO `MathTex` labels; use `Text`)
+
+ANIMATION RULES:
+- Use only a few simple `self.play(...)` calls per frame (FadeIn/FadeOut/Transform/MoveAlongPath/Rotate).
+- Keep `run_time` values small and fixed (e.g. 0.5, 1.0, 2.0). Do NOT compute run_time from durationSeconds.
+- The only timing authority is the literal `self.wait(durationSeconds)` line per frame.
+
+Remember: no code fences, no markdown, Python code only.

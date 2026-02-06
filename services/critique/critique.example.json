@@ -1,0 +1,69 @@
+{
+  "input": {
+    "storyboard": [
+      {
+        "frameId": 1,
+        "sceneTitle": "The problem: searching in a sorted list",
+        "visualElements": [
+          "A neat horizontal row of numbered boxes representing a sorted array"
+        ],
+        "onScreenText": ["Goal: find a value in a sorted list"],
+        "animationIntent": "Pan across the sorted row, then pause on the target label.",
+        "voiceoverScript": "We want to find a specific value inside a sorted list. Explain why binary search requires sorted data.",
+        "durationSeconds": 8
+      },
+      {
+        "frameId": 2,
+        "sceneTitle": "Check the middle, then discard half",
+        "visualElements": [
+          "A marker on the middle box",
+          "Shade the discarded half"
+        ],
+        "onScreenText": ["Look at the middle", "Discard half"],
+        "animationIntent": "Zoom into the middle, fade out the discarded half.",
+        "voiceoverScript": "Binary search checks the middle element first, then keeps only the half that could still contain the target.",
+        "durationSeconds": 10
+      }
+    ],
+    "renderMetadata": {
+      "ok": true,
+      "exitCode": 0,
+      "elapsedSeconds": 12.3,
+      "totalDuration": 18,
+      "sceneDurations": [
+        {
+          "frameId": 1,
+          "sceneTitle": "The problem: searching in a sorted list",
+          "durationSeconds": 8
+        },
+        {
+          "frameId": 2,
+          "sceneTitle": "Check the middle, then discard half",
+          "durationSeconds": 10
+        }
+      ],
+      "frameCount": 2,
+      "stdout": "",
+      "stderr": ""
+    },
+    "manimCode": "from manim import *\n\nclass StoryboardScene(Scene):\n    def construct(self):\n        # Frame 1: The problem: searching in a sorted list\n        title = Text(\"The problem: searching in a sorted list\")\n        self.add(title)\n        self.wait(8)\n        self.clear()\n        # Frame 2: Check the middle, then discard half\n        title = Text(\"Check the middle, then discard half\")\n        self.add(title)\n        self.wait(10)\n"
+  },
+  "output": {
+    "issues": [
+      {
+        "frameId": 1,
+        "type": "visual",
+        "description": "The frame likely lacks hierarchy: a single title may not communicate the 'sorted list' visualElements clearly enough for beginners.",
+        "severity": "medium",
+        "suggestedFix": "Ensure the sorted array is visually represented (e.g., multiple labeled boxes) and keep the title smaller than the primary visual so the concept reads instantly."
+      },
+      {
+        "frameId": 2,
+        "type": "clarity",
+        "description": "The storyboard calls for showing both a middle marker and discarding half; if the visuals are only text, viewers may not understand the compare-and-discard action.",
+        "severity": "high",
+        "suggestedFix": "Depict the midpoint explicitly and visually fade/shade the discarded half so the audience can see the narrowing step, not just hear it."
+      }
+    ]
+  }
+}

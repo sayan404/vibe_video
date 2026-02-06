@@ -1,0 +1,58 @@
+{
+  "runId": "ef098f42-c4bc-49fb-b3a7-26807c941964",
+  "createdAt": "2026-02-02T20:13:46.211Z",
+  "input": {
+    "topic": "Binary search",
+    "targetAudience": "intermediate",
+    "desiredDurationMinutes": 1
+  },
+  "phases": {
+    "phase1_research": {
+      "status": "success",
+      "startedAt": "2026-02-02T20:36:11.351Z",
+      "finishedAt": "2026-02-02T20:36:21.520Z"
+    },
+    "phase2_storyboard": {
+      "status": "success",
+      "startedAt": "2026-02-02T20:36:11.351Z",
+      "finishedAt": "2026-02-02T20:38:36.916Z"
+    },
+    "phase3_manim_codegen": {
+      "status": "success",
+      "startedAt": "2026-02-02T20:58:06.090Z",
+      "finishedAt": "2026-02-02T20:58:25.594Z"
+    },
+    "phase4_manim_render": {
+      "status": "success",
+      "startedAt": "2026-02-03T19:19:59.953Z",
+      "finishedAt": "2026-02-03T19:21:23.039Z"
+    },
+    "phase5_video_critique": {
+      "status": "success",
+      "startedAt": "2026-02-02T21:09:03.467Z",
+      "finishedAt": "2026-02-02T21:09:25.496Z"
+    },
+    "phase6_iteration": {
+      "status": "success",
+      "startedAt": "2026-02-02T21:09:53.569Z",
+      "finishedAt": "2026-02-02T21:11:15.647Z"
+    },
+    "phase7_export": {
+      "status": "success",
+      "startedAt": "2026-02-02T21:11:48.962Z",
+      "finishedAt": "2026-02-02T21:11:48.978Z"
+    }
+  },
+  "artifacts": {
+    "researchJson": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/phase1.research.json",
+    "storyboardJson": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/phase2.storyboard.json",
+    "manimCodePath": "E:\\Codes\\vv\\runs\\ef098f42-c4bc-49fb-b3a7-26807c941964\\phase3.manim.py",
+    "renderMetadataJson": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/phase4.render.json",
+    "renderedVideoPath": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/media/videos/phase6.manim.refined/480p15/StoryboardScene.mp4",
+    "critiqueJson": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/phase5.critique.json",
+    "iterationJson": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/phase6.iteration.json",
+    "finalManimCodePath": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/phase6.manim.refined.py",
+    "voiceoverScriptPath": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/voiceover.txt",
+    "readmePath": "E:/Codes/vv/runs/ef098f42-c4bc-49fb-b3a7-26807c941964/README.md"
+  }
+}

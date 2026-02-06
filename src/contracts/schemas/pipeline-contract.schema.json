@@ -1,0 +1,646 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "vv://contracts/pipeline-contract.schema.json",
+  "title": "VV Pipeline Contract Schemas",
+  "type": "object",
+  "additionalProperties": false,
+  "anyOf": [
+    { "$ref": "#/$defs/IngestNormalizeInput" },
+    { "$ref": "#/$defs/IngestNormalizeOutput" },
+    { "$ref": "#/$defs/ReasonInput" },
+    { "$ref": "#/$defs/ReasonOutput" },
+    { "$ref": "#/$defs/CritiqueInput" },
+    { "$ref": "#/$defs/CritiqueOutput" },
+    { "$ref": "#/$defs/RefineInput" },
+    { "$ref": "#/$defs/RefineOutput" },
+    { "$ref": "#/$defs/ValidateSpecInput" },
+    { "$ref": "#/$defs/ValidateSpecOutput" },
+    { "$ref": "#/$defs/StoryboardGenerateInput" },
+    { "$ref": "#/$defs/StoryboardGenerateOutput" },
+    { "$ref": "#/$defs/ManimCodegenInput" },
+    { "$ref": "#/$defs/ManimCodegenOutput" },
+    { "$ref": "#/$defs/ManimRenderInput" },
+    { "$ref": "#/$defs/ManimRenderOutput" },
+    { "$ref": "#/$defs/RenderCritiqueInput" },
+    { "$ref": "#/$defs/RenderCritiqueOutput" },
+    { "$ref": "#/$defs/RenderRefineInput" },
+    { "$ref": "#/$defs/RenderRefineOutput" }
+  ],
+  "$defs": {
+    "SchemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "PhaseId": {
+      "type": "string",
+      "enum": [
+        "ingest_normalize",
+        "reason",
+        "critique",
+        "refine",
+        "validate_spec",
+        "storyboard_generate",
+        "manim_codegen",
+        "manim_render",
+        "render_critique",
+        "render_refine"
+      ]
+    },
+    "TraceContext": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runId", "traceId", "attempt", "startedAt"],
+      "properties": {
+        "runId": { "type": "string", "format": "uuid" },
+        "traceId": { "type": "string", "format": "uuid" },
+        "attempt": { "type": "integer", "minimum": 1 },
+        "startedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "PhaseError": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["code", "message", "retryable"],
+      "properties": {
+        "code": { "type": "string", "minLength": 1 },
+        "message": { "type": "string", "minLength": 1 },
+        "retryable": { "type": "boolean" },
+        "details": {}
+      }
+    },
+    "ArtifactRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["uri", "mimeType"],
+      "properties": {
+        "uri": { "type": "string", "minLength": 1 },
+        "mimeType": { "type": "string", "minLength": 1 },
+        "sha256": { "type": "string", "minLength": 1 },
+        "bytes": { "type": "integer", "minimum": 0 },
+        "generatedByPhase": { "$ref": "#/$defs/PhaseId" }
+      }
+    },
+
+    "GenerationPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "temperature": { "type": "string", "enum": ["low", "medium"] },
+        "creativity": { "type": "string", "const": "bounded" },
+        "allowNovelContent": { "type": "boolean" }
+      }
+    },
+
+    "RawUserRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["text"],
+      "properties": {
+        "text": { "type": "string", "minLength": 1 },
+        "locale": { "type": "string", "default": "en-US" },
+        "project": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "title": { "type": "string" },
+            "targetDurationSec": { "type": "number", "minimum": 1 },
+            "targetResolution": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["width", "height"],
+              "properties": {
+                "width": { "type": "integer", "minimum": 1 },
+                "height": { "type": "integer", "minimum": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
+    "NormalizedRequest": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["goal", "constraints", "assumptions"],
+      "properties": {
+        "goal": { "type": "string", "minLength": 1 },
+        "audience": { "type": "string" },
+        "tone": { "type": "string" },
+        "constraints": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["mustFollowGlobalRules"],
+          "properties": {
+            "maxDurationSec": { "type": "number", "minimum": 1 },
+            "mustFollowGlobalRules": { "type": "boolean", "const": true }
+          }
+        },
+        "assumptions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+
+    "ReasonDraft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["outline", "scenes", "reasoningSummary", "assumptions"],
+      "properties": {
+        "outline": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "scenes": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "title", "intent"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "title": { "type": "string", "minLength": 1 },
+              "intent": { "type": "string", "minLength": 1 },
+              "mathNotes": { "type": "array", "items": { "type": "string" } }
+            }
+          }
+        },
+        "reasoningSummary": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 },
+          "description": "High-level rationale bullets only (no hidden chain-of-thought)."
+        },
+        "assumptions": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+
+    "CritiqueReport": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["issues", "summary"],
+      "properties": {
+        "summary": { "type": "string", "minLength": 1 },
+        "issues": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "severity", "message", "recommendation"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "severity": {
+                "type": "string",
+                "enum": ["low", "medium", "high", "critical"]
+              },
+              "message": { "type": "string", "minLength": 1 },
+              "recommendation": { "type": "string", "minLength": 1 },
+              "locationHint": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "RefinedSpec": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "title",
+        "narrationScript",
+        "shotList",
+        "visualStyleGuide",
+        "storyboardRequirements",
+        "assets"
+      ],
+      "properties": {
+        "title": { "type": "string", "minLength": 1 },
+        "narrationScript": { "type": "string", "minLength": 1 },
+        "onScreenText": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        },
+        "visualStyleGuide": { "type": "string", "minLength": 1 },
+        "storyboardRequirements": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["aspectRatio", "frameCount"],
+          "properties": {
+            "aspectRatio": { "type": "string", "minLength": 3 },
+            "frameCount": { "type": "integer", "minimum": 1 },
+            "notes": { "type": "string" }
+          }
+        },
+        "shotList": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "startSec", "endSec", "intent"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "startSec": { "type": "number", "minimum": 0 },
+              "endSec": { "type": "number", "exclusiveMinimum": 0 },
+              "intent": { "type": "string", "minLength": 1 },
+              "manimIntent": { "type": "string" }
+            }
+          }
+        },
+        "assets": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["id", "type", "description"],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "type": {
+                "type": "string",
+                "enum": ["image", "svg", "audio", "font", "other"]
+              },
+              "description": { "type": "string", "minLength": 1 },
+              "sourceHint": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "Storyboard": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["frames"],
+      "properties": {
+        "styleNotes": { "type": "string" },
+        "frames": {
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "index",
+              "shotId",
+              "startSec",
+              "endSec",
+              "prompt"
+            ],
+            "properties": {
+              "id": { "type": "string", "minLength": 1 },
+              "index": { "type": "integer", "minimum": 0 },
+              "shotId": { "type": "string", "minLength": 1 },
+              "startSec": { "type": "number", "minimum": 0 },
+              "endSec": { "type": "number", "exclusiveMinimum": 0 },
+              "prompt": { "type": "string", "minLength": 1 },
+              "negativePrompt": { "type": "string" },
+              "notes": { "type": "string" },
+              "image": { "$ref": "#/$defs/ArtifactRef" }
+            }
+          }
+        }
+      }
+    },
+
+    "ManimCodegenResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["pythonSource", "entryScene", "renderConfig"],
+      "properties": {
+        "pythonSource": { "type": "string", "minLength": 1 },
+        "entryScene": { "type": "string", "minLength": 1 },
+        "overrides": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "forceDurationSec": { "type": "number", "minimum": 0 },
+            "disableShots": {
+              "type": "array",
+              "items": { "type": "string", "minLength": 1 }
+            }
+          }
+        },
+        "renderConfig": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["fps", "resolution", "quality"],
+          "properties": {
+            "fps": { "type": "integer", "minimum": 1 },
+            "quality": {
+              "type": "string",
+              "enum": ["low", "medium", "high", "ultra"]
+            },
+            "resolution": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": ["width", "height"],
+              "properties": {
+                "width": { "type": "integer", "minimum": 1 },
+                "height": { "type": "integer", "minimum": 1 }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "ManimRenderResult": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["video", "logs", "metadata"],
+      "properties": {
+        "video": { "$ref": "#/$defs/ArtifactRef" },
+        "logs": { "$ref": "#/$defs/ArtifactRef" },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["renderedAt", "durationSec"],
+          "properties": {
+            "renderedAt": { "type": "string", "format": "date-time" },
+            "durationSec": { "type": "number", "minimum": 0 }
+          }
+        }
+      }
+    },
+
+    "PhaseOutputBase": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "status"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "$ref": "#/$defs/PhaseId" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "status": { "enum": ["success", "error"] },
+        "error": { "$ref": "#/$defs/PhaseError" }
+      }
+    },
+
+    "IngestNormalizeInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "input"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "const": "ingest_normalize" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "input": { "$ref": "#/$defs/RawUserRequest" }
+      }
+    },
+    "IngestNormalizeOutput": {
+      "allOf": [
+        { "$ref": "#/$defs/PhaseOutputBase" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["phase"],
+          "properties": {
+            "phase": { "const": "ingest_normalize" },
+            "output": { "$ref": "#/$defs/NormalizedRequest" }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": { "required": ["output"], "not": { "required": ["error"] } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "error" } } },
+          "then": { "required": ["error"], "not": { "required": ["output"] } }
+        }
+      ]
+    },
+
+    "ReasonInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "input"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "const": "reason" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "input": { "$ref": "#/$defs/NormalizedRequest" }
+      }
+    },
+    "ReasonOutput": {
+      "allOf": [
+        { "$ref": "#/$defs/PhaseOutputBase" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["phase"],
+          "properties": {
+            "phase": { "const": "reason" },
+            "output": { "$ref": "#/$defs/ReasonDraft" }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": { "required": ["output"], "not": { "required": ["error"] } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "error" } } },
+          "then": { "required": ["error"], "not": { "required": ["output"] } }
+        }
+      ]
+    },
+
+    "CritiqueInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "input"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "const": "critique" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["request", "draft"],
+          "properties": {
+            "request": { "$ref": "#/$defs/NormalizedRequest" },
+            "draft": { "$ref": "#/$defs/ReasonDraft" }
+          }
+        }
+      }
+    },
+    "CritiqueOutput": {
+      "allOf": [
+        { "$ref": "#/$defs/PhaseOutputBase" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["phase"],
+          "properties": {
+            "phase": { "const": "critique" },
+            "output": { "$ref": "#/$defs/CritiqueReport" }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": { "required": ["output"], "not": { "required": ["error"] } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "error" } } },
+          "then": { "required": ["error"], "not": { "required": ["output"] } }
+        }
+      ]
+    },
+
+    "RefineInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "input"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "const": "refine" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["request", "draft", "critique"],
+          "properties": {
+            "request": { "$ref": "#/$defs/NormalizedRequest" },
+            "draft": { "$ref": "#/$defs/ReasonDraft" },
+            "critique": { "$ref": "#/$defs/CritiqueReport" }
+          }
+        }
+      }
+    },
+    "RefineOutput": {
+      "allOf": [
+        { "$ref": "#/$defs/PhaseOutputBase" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["phase"],
+          "properties": {
+            "phase": { "const": "refine" },
+            "output": { "$ref": "#/$defs/RefinedSpec" }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": { "required": ["output"], "not": { "required": ["error"] } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "error" } } },
+          "then": { "required": ["error"], "not": { "required": ["output"] } }
+        }
+      ]
+    },
+
+    "StoryboardGenerateInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "input"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "const": "storyboard_generate" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "input": { "$ref": "#/$defs/RefinedSpec" }
+      }
+    },
+    "StoryboardGenerateOutput": {
+      "allOf": [
+        { "$ref": "#/$defs/PhaseOutputBase" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["phase"],
+          "properties": {
+            "phase": { "const": "storyboard_generate" },
+            "output": { "$ref": "#/$defs/Storyboard" }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": { "required": ["output"], "not": { "required": ["error"] } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "error" } } },
+          "then": { "required": ["error"], "not": { "required": ["output"] } }
+        }
+      ]
+    },
+
+    "ManimCodegenInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "input"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "const": "manim_codegen" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "input": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["spec", "storyboard"],
+          "properties": {
+            "spec": { "$ref": "#/$defs/RefinedSpec" },
+            "storyboard": { "$ref": "#/$defs/Storyboard" }
+          }
+        }
+      }
+    },
+    "ManimCodegenOutput": {
+      "allOf": [
+        { "$ref": "#/$defs/PhaseOutputBase" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["phase"],
+          "properties": {
+            "phase": { "const": "manim_codegen" },
+            "output": { "$ref": "#/$defs/ManimCodegenResult" }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": { "required": ["output"], "not": { "required": ["error"] } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "error" } } },
+          "then": { "required": ["error"], "not": { "required": ["output"] } }
+        }
+      ]
+    },
+
+    "ManimRenderInput": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["schemaVersion", "phase", "trace", "input"],
+      "properties": {
+        "schemaVersion": { "$ref": "#/$defs/SchemaVersion" },
+        "phase": { "const": "manim_render" },
+        "trace": { "$ref": "#/$defs/TraceContext" },
+        "input": { "$ref": "#/$defs/ManimCodegenResult" }
+      }
+    },
+    "ManimRenderOutput": {
+      "allOf": [
+        { "$ref": "#/$defs/PhaseOutputBase" },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["phase"],
+          "properties": {
+            "phase": { "const": "manim_render" },
+            "output": { "$ref": "#/$defs/ManimRenderResult" }
+          }
+        },
+        {
+          "if": { "properties": { "status": { "const": "success" } } },
+          "then": { "required": ["output"], "not": { "required": ["error"] } }
+        },
+        {
+          "if": { "properties": { "status": { "const": "error" } } },
+          "then": { "required": ["error"], "not": { "required": ["output"] } }
+        }
+      ]
+    }
+  }
+}

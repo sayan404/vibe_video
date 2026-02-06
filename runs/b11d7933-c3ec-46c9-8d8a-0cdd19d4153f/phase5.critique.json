@@ -1,0 +1,46 @@
+{
+  "issues": [
+    {
+      "frameId": 7,
+      "type": "timing",
+      "description": "The voiceover script contains approximately 50 words (a summary of the whole lesson), which requires about 20 seconds to read at a normal pace. The allocated duration is only 5 seconds, making it impossible to synchronize.",
+      "severity": "high",
+      "suggestedFix": "Increase the duration of Frame 7 to at least 20 seconds or drastically trim the voiceover script to a single concluding sentence."
+    },
+    {
+      "frameId": 3,
+      "type": "timing",
+      "description": "The voiceover script ('But why does it bend? ...') is roughly 35 words, requiring about 14-16 seconds. The allocated duration is 10 seconds, which will likely feel rushed or cut off audio.",
+      "severity": "medium",
+      "suggestedFix": "Extend the duration of Frame 3 to 15 seconds to comfortably fit the explanation of light speed differences."
+    },
+    {
+      "frameId": 1,
+      "type": "timing",
+      "description": "The current Manim code implementation adds 0.5s for FadeIn and 0.5s for FadeOut *in addition* to the storyboard `durationSeconds`. This results in a 1-second drift per frame, accumulating to a ~7-second desynchronization by the end of the video compared to the planned audio track.",
+      "severity": "medium",
+      "suggestedFix": "Subtract the transition times (1.0s total) from the `self.wait()` calls in the code, or account for transition time in the storyboard planning."
+    },
+    {
+      "frameId": 3,
+      "type": "visual",
+      "description": "The visual elements describe a split screen (Left for Air, Right for Water), but the On-Screen Text ('Air: Fast', 'Water: Slow') is arranged vertically (`arrange(DOWN)`), which breaks the spatial mapping and may confuse the viewer.",
+      "severity": "low",
+      "suggestedFix": "Change the text arrangement to horizontal (`arrange(RIGHT, buff=2.0)`) or explicitly position 'Air: Fast' on the left and 'Water: Slow' on the right to match the visual split."
+    },
+    {
+      "frameId": 5,
+      "type": "pedagogical",
+      "description": "This frame relies heavily on the visual of the 'pivot' to explain the mechanism, but lacks labeling. Without explicit labels for the differential forces (e.g., 'Drag' on the grass wheel), the connection between the medium change and the rotation might be missed.",
+      "severity": "medium",
+      "suggestedFix": "Add On-Screen Text or labels to the visual elements that explicitly identify the 'Drag Force' or 'Speed Reduction' on the wheel entering the grass."
+    },
+    {
+      "frameId": 1,
+      "type": "visual",
+      "description": "The current implementation renders text descriptions of the visuals (e.g., text reading 'A clear glass...') rather than the actual geometric animations described in the `animationIntent`. This fails to visualize the physics concepts.",
+      "severity": "high",
+      "suggestedFix": "Replace the text placeholders in the Manim code with actual geometric shapes (Lines, Circles) and animations to depict the glass, pencil, and light beams."
+    }
+  ]
+}

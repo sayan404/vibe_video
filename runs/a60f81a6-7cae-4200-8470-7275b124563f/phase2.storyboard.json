@@ -1,0 +1,121 @@
+[
+  {
+    "frameId": 1,
+    "sceneTitle": "The Bookshelf Intuition",
+    "visualElements": [
+      "A messy horizontal bookshelf spanning the screen.",
+      "Two animated stick figures: 'Lefty' standing at the far left, 'Righty' standing at the far right.",
+      "A chaotic pile of books in the middle."
+    ],
+    "onScreenText": [
+      "The Two Pointers Intuition"
+    ],
+    "animationIntent": "Lefty and Righty pick up books simultaneously, communicate, and swap them across the shelf without moving their feet much. The shelf becomes organized quickly.",
+    "voiceoverScript": "Imagine organizing a messy bookshelf with a friend. Instead of one person running back and forth, one stands at the left end, and the other at the right. You work simultaneously to swap books into place.",
+    "durationSeconds": 8,
+    "imagePath": "E:/Codes/vv/runs/a60f81a6-7cae-4200-8470-7275b124563f/storyboard_images/frame-1.jpg"
+  },
+  {
+    "frameId": 2,
+    "sceneTitle": "The Brute Force Bottleneck",
+    "visualElements": [
+      "Visual representation of a nested loop: A large 'i' arrow moving slowly, and a frantic 'j' arrow scanning the whole list for every step 'i' takes.",
+      "A clock spinning rapidly to show lost time.",
+      "A complexity graph showing a steep red curve (O(N^2))."
+    ],
+    "onScreenText": [
+      "Nested Loops = O(N²)",
+      "Inefficient"
+    ],
+    "animationIntent": "Show the 'j' arrow iterating exhaustively and wastefully. The clock spins faster as the data set grows larger, indicating a bottleneck.",
+    "voiceoverScript": "In programming, the naive approach often involves nested loops—checking every pair against every other pair. This brute force method creates quadratic time complexity, which becomes painfully slow as data grows.",
+    "durationSeconds": 10,
+    "imagePath": "E:/Codes/vv/runs/a60f81a6-7cae-4200-8470-7275b124563f/storyboard_images/frame-2.jpg"
+  },
+  {
+    "frameId": 3,
+    "sceneTitle": "Introducing Two Pointers",
+    "visualElements": [
+      "The 'j' loop disappears.",
+      "Two distinct arrows appear: a blue one (Left/Start) and a green one (Right/End).",
+      "They move independently based on logic, not just simple incrementation."
+    ],
+    "onScreenText": [
+      "Optimization Strategy",
+      "O(N) Potential"
+    ],
+    "animationIntent": "The two arrows glide smoothly along a data bar. The red O(N^2) curve flattens into a linear green O(N) line.",
+    "voiceoverScript": "To fix this, we use two distinct reference points simultaneously. This technique allows you to identify problems suitable for two pointer optimization over nested loops, turning sluggish code into efficient solutions.",
+    "durationSeconds": 10,
+    "imagePath": "E:/Codes/vv/runs/a60f81a6-7cae-4200-8470-7275b124563f/storyboard_images/frame-3.jpg"
+  },
+  {
+    "frameId": 4,
+    "sceneTitle": "Pattern 1: Opposite-Directional",
+    "visualElements": [
+      "A sorted array of numbers.",
+      "Pointer L at index 0, Pointer R at the last index.",
+      "Target sum logic visualized: Sum is too large -> R moves left. Sum is too small -> L moves right."
+    ],
+    "onScreenText": [
+      "Opposite-Directional",
+      "Collision Course"
+    ],
+    "animationIntent": "Pointers step inward towards the center. When they find the pair, they pulse/highlight. This mimics the bookshelf example.",
+    "voiceoverScript": "The first common pattern is 'Opposite-Directional'. One pointer starts at the beginning, the other at the end. They move toward each other to meet specific conditions, like finding a target sum in a sorted array.",
+    "durationSeconds": 12,
+    "imagePath": "E:/Codes/vv/runs/a60f81a6-7cae-4200-8470-7275b124563f/storyboard_images/frame-4.jpg"
+  },
+  {
+    "frameId": 5,
+    "sceneTitle": "Pattern 2: Equi-Directional (Fast & Slow)",
+    "visualElements": [
+      "A circular track (representing a linked list with a cycle).",
+      "Two runners: A 'Tortoise' (slow) and a 'Hare' (fast).",
+      "Both start at the same line."
+    ],
+    "onScreenText": [
+      "Equi-Directional",
+      "Fast & Slow Pointers"
+    ],
+    "animationIntent": "The Hare moves two steps for every one step the Tortoise takes. The Hare eventually laps the Tortoise, catching it from behind.",
+    "voiceoverScript": "Alternatively, both pointers can start at the beginning, with one moving faster than the other. To master this technique, you must distinguish between opposite-directional (collision) and equi-directional (fast/slow) pointer patterns.",
+    "durationSeconds": 12,
+    "imagePath": "E:/Codes/vv/runs/a60f81a6-7cae-4200-8470-7275b124563f/storyboard_images/frame-5.jpg"
+  },
+  {
+    "frameId": 6,
+    "sceneTitle": "Complexity & In-Place Benefits",
+    "visualElements": [
+      "A split screen.",
+      "Left side: A new array being created (memory bar filling up).",
+      "Right side: Elements swapping inside the original array (memory bar stays empty/low).",
+      "Text comparison: O(N) Space vs O(1) Space."
+    ],
+    "onScreenText": [
+      "O(1) Space Complexity",
+      "In-Place Swapping"
+    ],
+    "animationIntent": "Highlight the empty space on the right side. Show elements simply trading places without needing a second container.",
+    "voiceoverScript": "A major advantage is memory usage. By using pointers to swap data directly in the existing structure, we can analyze the time and space complexity benefits of in-place pointer manipulation, often keeping space complexity at a constant O(1).",
+    "durationSeconds": 12,
+    "imagePath": "E:/Codes/vv/runs/a60f81a6-7cae-4200-8470-7275b124563f/storyboard_images/frame-6.jpg"
+  },
+  {
+    "frameId": 7,
+    "sceneTitle": "Summary & Misconception Check",
+    "visualElements": [
+      "Icons appearing: A linear graph, a recycling symbol (for memory), and a 'Stop' sign near a 'Sorted Only?' label.",
+      "Text labels: 'O(N) Speed', 'O(1) Space', 'Not Always Sorted'."
+    ],
+    "onScreenText": [
+      "Review",
+      "Linear Time",
+      "Constant Space"
+    ],
+    "animationIntent": "The 'Sorted Only?' label gets a checkmark for Binary Search tasks but a cross for Partitioning/Cycle tasks to clear the misconception.",
+    "voiceoverScript": "Remember: while sorting helps some patterns, logic like cycle detection works on unsorted data too. Two pointers offer a powerful way to reduce runtime from quadratic to linear while saving memory.\n\nIdentify problems suitable for two pointer optimization over nested loops\nDistinguish between opposite-directional (collision) and equi-directional (fast/slow) pointer patterns\nAnalyze the time and space complexity benefits of in-place pointer manipulation",
+    "durationSeconds": 10,
+    "imagePath": "E:/Codes/vv/runs/a60f81a6-7cae-4200-8470-7275b124563f/storyboard_images/frame-7.jpg"
+  }
+]

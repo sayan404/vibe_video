@@ -1,0 +1,58 @@
+{
+  "runId": "4748aaf0-1d57-41bf-80e4-d9d78b3da2b6",
+  "createdAt": "2026-02-05T14:57:41.466Z",
+  "input": {
+    "topic": "kaidens algo",
+    "targetAudience": "beginner",
+    "desiredDurationMinutes": 2
+  },
+  "phases": {
+    "phase1_research": {
+      "status": "success",
+      "startedAt": "2026-02-05T14:58:04.376Z",
+      "finishedAt": "2026-02-05T14:58:27.996Z"
+    },
+    "phase2_storyboard": {
+      "status": "success",
+      "startedAt": "2026-02-05T14:58:28.001Z",
+      "finishedAt": "2026-02-05T15:03:03.462Z"
+    },
+    "phase3_manim_codegen": {
+      "status": "success",
+      "startedAt": "2026-02-05T15:10:02.685Z",
+      "finishedAt": "2026-02-05T15:11:32.408Z"
+    },
+    "phase4_manim_render": {
+      "status": "success",
+      "startedAt": "2026-02-06T07:18:40.441Z",
+      "finishedAt": "2026-02-06T07:19:19.201Z"
+    },
+    "phase5_video_critique": {
+      "status": "success",
+      "startedAt": "2026-02-06T07:02:25.080Z",
+      "finishedAt": "2026-02-06T07:04:25.141Z"
+    },
+    "phase6_iteration": {
+      "status": "success",
+      "startedAt": "2026-02-06T07:06:12.512Z",
+      "finishedAt": "2026-02-06T07:13:20.397Z"
+    },
+    "phase7_export": {
+      "status": "success",
+      "startedAt": "2026-02-05T15:45:04.769Z",
+      "finishedAt": "2026-02-05T15:45:04.803Z"
+    }
+  },
+  "artifacts": {
+    "researchJson": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/phase1.research.json",
+    "storyboardJson": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/phase2.storyboard.json",
+    "manimCodePath": "E:\\Codes\\vv\\runs\\4748aaf0-1d57-41bf-80e4-d9d78b3da2b6\\phase3.manim.py",
+    "renderMetadataJson": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/phase4.render.json",
+    "renderedVideoPath": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/media/videos/phase6.manim.refined/480p15/StoryboardScene.mp4",
+    "critiqueJson": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/phase5.critique.json",
+    "iterationJson": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/phase6.iteration.json",
+    "finalManimCodePath": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/phase6.manim.refined.py",
+    "voiceoverScriptPath": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/voiceover.txt",
+    "readmePath": "E:/Codes/vv/runs/4748aaf0-1d57-41bf-80e4-d9d78b3da2b6/README.md"
+  }
+}

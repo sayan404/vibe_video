@@ -1,0 +1,22 @@
+{
+  "input": {
+    "originalManimCode": "from manim import *\n\nclass StoryboardScene(Scene):\n    def construct(self):\n        # Frame 1: The problem: searching in a sorted list\n        title = Text(\"The problem: searching in a sorted list\")\n        self.add(title)\n        self.wait(8)\n        self.clear()\n        # Frame 2: Check the middle, then discard half\n        title = Text(\"Check the middle, then discard half\")\n        self.add(title)\n        self.wait(10)\n",
+    "critique": {
+      "issues": [
+        {
+          "frameId": 1,
+          "type": "visual",
+          "description": "Frame 1 lacks clear depiction of the sorted array visual element.",
+          "severity": "medium",
+          "suggestedFix": "Add simple labeled box visuals or at least multiple text items representing sorted boxes."
+        }
+      ]
+    }
+  },
+  "output": {
+    "updatedCode": "from manim import *\n\nclass StoryboardScene(Scene):\n    def construct(self):\n        # Frame 1: The problem: searching in a sorted list\n        title = Text(\"The problem: searching in a sorted list\")\n        boxes = VGroup(*[Text(str(n)).scale(0.7) for n in [1, 3, 5, 7, 9]]).arrange(RIGHT, buff=0.6)\n        group = VGroup(title, boxes).arrange(DOWN, buff=0.8)\n        self.add(group)\n        self.wait(8)\n        self.clear()\n        # Frame 2: Check the middle, then discard half\n        title = Text(\"Check the middle, then discard half\")\n        self.add(title)\n        self.wait(10)\n",
+    "changeLog": [
+      "Frame 1: Added a simple row of labeled items to visually represent a sorted list while keeping the original frame timing and mapping comment unchanged."
+    ]
+  }
+}

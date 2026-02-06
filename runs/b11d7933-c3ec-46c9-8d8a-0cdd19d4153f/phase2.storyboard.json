@@ -1,0 +1,112 @@
+[
+  {
+    "frameId": 1,
+    "sceneTitle": "The Broken Straw Hook",
+    "visualElements": [
+      "A clear glass half-filled with water on a table.",
+      "A yellow pencil resting inside the glass.",
+      "Camera angle straight on, showing the water line."
+    ],
+    "onScreenText": [
+      "Is the pencil broken?"
+    ],
+    "animationIntent": "The pencil should clearly look 'severed' or disjointed at the water's surface (the interface). The camera slowly zooms in on the break point.",
+    "voiceoverScript": "Have you ever noticed how a pencil or a straw looks completely broken when you put it in a glass of water? It looks like magic, but your eyes are playing tricks on you.",
+    "durationSeconds": 6,
+    "imagePath": "E:/Codes/vv/runs/b11d7933-c3ec-46c9-8d8a-0cdd19d4153f/storyboard_images/frame-1.jpg"
+  },
+  {
+    "frameId": 2,
+    "sceneTitle": "Defining Refraction",
+    "visualElements": [
+      "Schematic 2D side view of the air/water interface.",
+      "A single laser beam traveling from air into water.",
+      "Dotted line showing the 'straight' path vs the actual 'bent' path."
+    ],
+    "onScreenText": [
+      "REFRACTION"
+    ],
+    "animationIntent": "The laser beam draws straight, hits the water line, and abruptly kinks downward. The text 'REFRACTION' fades in large.",
+    "voiceoverScript": "The pencil isn't actually bending; the light bouncing off it is. In physics, we define refraction as the bending of light.",
+    "durationSeconds": 8,
+    "imagePath": "E:/Codes/vv/runs/b11d7933-c3ec-46c9-8d8a-0cdd19d4153f/storyboard_images/frame-2.jpg"
+  },
+  {
+    "frameId": 3,
+    "sceneTitle": "Mechanism: Speed of Light",
+    "visualElements": [
+      "Split screen comparison.",
+      "Left side: 'Air' (sparse particles). Right side: 'Water' (dense particles).",
+      "Two photons (glowing particles) racing across the screen."
+    ],
+    "onScreenText": [
+      "Air: Fast",
+      "Water: Slow"
+    ],
+    "animationIntent": "The photon in the air zips across quickly. The photon in the water moves significantly slower, struggling through the density.",
+    "voiceoverScript": "But why does it bend? To answer that, you need to understand that light travels at different speeds in different materials. It zips through air, but drags when moving through denser water.",
+    "durationSeconds": 10,
+    "imagePath": "E:/Codes/vv/runs/b11d7933-c3ec-46c9-8d8a-0cdd19d4153f/storyboard_images/frame-3.jpg"
+  },
+  {
+    "frameId": 4,
+    "sceneTitle": "Analogy: The Car and The Grass",
+    "visualElements": [
+      "Top-down view of a toy car or shopping cart.",
+      "An angled boundary line separating smooth gray pavement from thick green grass.",
+      "Car approaching the grass at a 45-degree angle."
+    ],
+    "onScreenText": [
+      "Pavement",
+      "Thick Grass"
+    ],
+    "animationIntent": "The car rolls smoothly on the pavement. The camera tracks its movement towards the grass line.",
+    "voiceoverScript": "Imagine a car rolling from smooth pavement onto thick, muddy grass at an angle.",
+    "durationSeconds": 5,
+    "imagePath": "E:/Codes/vv/runs/b11d7933-c3ec-46c9-8d8a-0cdd19d4153f/storyboard_images/frame-4.jpg"
+  },
+  {
+    "frameId": 5,
+    "sceneTitle": "Analogy: The Pivot",
+    "visualElements": [
+      "Top-down view continues.",
+      "Front-right wheel enters grass; Front-left wheel stays on pavement.",
+      "Force arrows indicating drag on the right wheel."
+    ],
+    "onScreenText": [],
+    "animationIntent": "Slow motion: The wheel hitting the grass slows down immediately. The other wheel keeps its speed. The car pivots/rotates into the grass as a result.",
+    "voiceoverScript": "The wheel that hits the grass first gets bogged down and slows instantly. The other wheel is still moving fast on the pavement, causing the car to pivot.",
+    "durationSeconds": 8,
+    "imagePath": "E:/Codes/vv/runs/b11d7933-c3ec-46c9-8d8a-0cdd19d4153f/storyboard_images/frame-5.jpg"
+  },
+  {
+    "frameId": 6,
+    "sceneTitle": "Connecting Analogy to Reality",
+    "visualElements": [
+      "Cross-fade from the car back to a thick beam of light entering water.",
+      "Draw lines across the light beam representing 'wavefronts' (like the car's axle)."
+    ],
+    "onScreenText": [
+      "Speed Change = Direction Change"
+    ],
+    "animationIntent": "Show the wavefronts hitting the water at an angle. The part that hits first slows down, dragging the rest of the wave around, exactly like the car.",
+    "voiceoverScript": "Light behaves just like that car. This mechanical view allows us to explain how a change in speed causes a change in direction.",
+    "durationSeconds": 9,
+    "imagePath": "E:/Codes/vv/runs/b11d7933-c3ec-46c9-8d8a-0cdd19d4153f/storyboard_images/frame-6.jpg"
+  },
+  {
+    "frameId": 7,
+    "sceneTitle": "Summary and Conclusion",
+    "visualElements": [
+      "Return to the initial shot of the glass and pencil.",
+      "Overlay the light path diagram over the real footage."
+    ],
+    "onScreenText": [
+      "Refraction"
+    ],
+    "animationIntent": "The overlay fades out, leaving just the pencil. The 'broken' look now feels explained rather than magical.",
+    "voiceoverScript": "So the next time you see a broken straw, remember: nothing is broken. The light is just changing speeds.\n\nDefine refraction as the bending of light.\nUnderstand that light travels at different speeds in different materials.\nExplain how a change in speed causes a change in direction.",
+    "durationSeconds": 5,
+    "imagePath": "E:/Codes/vv/runs/b11d7933-c3ec-46c9-8d8a-0cdd19d4153f/storyboard_images/frame-7.jpg"
+  }
+]

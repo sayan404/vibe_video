@@ -1,0 +1,96 @@
+{
+  "topic": "Binary search",
+  "inputResearch": {
+    "topicSummary": "Binary search is a method for finding a target value in a sorted list by repeatedly checking the middle element and narrowing the search range to the half that could contain the target.",
+    "learningObjectives": [
+      "Explain why binary search requires sorted data",
+      "Trace binary search step-by-step on a small example",
+      "Describe the time complexity of binary search and what it means in practice"
+    ],
+    "prerequisites": [
+      "Understanding of arrays or lists",
+      "Basic comparison operations (less than, greater than, equal)"
+    ],
+    "coreConcepts": [
+      {
+        "name": "Sorted input requirement",
+        "explanation": "Binary search relies on the ability to discard half of the remaining elements based on whether the target is less than or greater than the middle element. This only works correctly when the data is sorted.",
+        "importance": "Without sorted data, the half you discard might contain the target, making the algorithm incorrect."
+      },
+      {
+        "name": "Search interval (low/high pointers)",
+        "explanation": "The algorithm maintains a current range where the target could be (often tracked by indices like low and high). Each step shrinks this range.",
+        "importance": "The shrinking interval is what guarantees the algorithm finishes quickly and helps avoid off-by-one errors."
+      }
+    ],
+    "commonMisconceptions": [
+      "Binary search works on unsorted lists",
+      "You must check every element to be sure a value is not present"
+    ],
+    "realWorldIntuition": "Imagine looking up a name in a printed phone book: you open it near the middle, see whether the name you want is alphabetically before or after that page, and then repeat with the remaining half.",
+    "recommendedFlow": [
+      "State the problem: find a target in a sorted list",
+      "Introduce the key idea: check the middle, discard half",
+      "Walk through a concrete example with low/high/mid",
+      "Summarize performance and the sorted-data requirement"
+    ]
+  },
+  "outputStoryboard": [
+    {
+      "frameId": 1,
+      "sceneTitle": "The problem: searching in a sorted list",
+      "visualElements": [
+        "A neat horizontal row of numbered boxes representing a sorted array",
+        "A small magnifying glass icon hovering above the row",
+        "A highlighted target value label on the side"
+      ],
+      "onScreenText": ["Goal: find a value in a sorted list"],
+      "animationIntent": "Start with the full row visible. Pan slowly from left to right to emphasize the list is ordered. The magnifying glass pauses over the row to set up the search.",
+      "voiceoverScript": "We want to find a specific value inside a sorted list. Explain why binary search requires sorted data.",
+      "durationSeconds": 8,
+      "imagePath": "runs/<runId>/storyboard_images/frame-1.png"
+    },
+    {
+      "frameId": 2,
+      "sceneTitle": "Check the middle, then discard half",
+      "visualElements": [
+        "The same sorted row of boxes",
+        "A clear marker on the middle box",
+        "A translucent overlay shading the half that gets discarded"
+      ],
+      "onScreenText": ["Look at the middle", "Discard half"],
+      "animationIntent": "Zoom slightly into the middle element. After the comparison, fade out the impossible half and keep the remaining half bright and centered.",
+      "voiceoverScript": "Binary search checks the middle element first, then keeps only the half that could still contain the target. Trace binary search step-by-step on a small example.",
+      "durationSeconds": 10,
+      "imagePath": "runs/<runId>/storyboard_images/frame-2.png"
+    },
+    {
+      "frameId": 3,
+      "sceneTitle": "Repeat until found (or not found)",
+      "visualElements": [
+        "The remaining half of the row now centered",
+        "A looping arrow indicating repetition",
+        "A small 'Found!' badge that can appear above a box"
+      ],
+      "onScreenText": ["Repeat: middle → compare → shrink range"],
+      "animationIntent": "Repeat the middle-mark-and-shrink motion quickly two times to show the pattern, then pop a 'Found!' badge to show the successful case.",
+      "voiceoverScript": "You repeat the same steps, shrinking the search range each time, until you find the value or the range becomes empty.",
+      "durationSeconds": 12,
+      "imagePath": "runs/<runId>/storyboard_images/frame-3.png"
+    },
+    {
+      "frameId": 4,
+      "sceneTitle": "Why it’s fast: cutting the work in half",
+      "visualElements": [
+        "A simple bar that halves repeatedly (full → half → quarter)",
+        "A small counter showing steps increasing slowly",
+        "A comparison to a long linear scan as a faint background"
+      ],
+      "onScreenText": ["Steps grow slowly as data grows", "≈ log₂(N)"],
+      "animationIntent": "Animate a bar splitting in half repeatedly, syncing each split with a small step counter increment. Keep the motion smooth and rhythmic.",
+      "voiceoverScript": "Because you cut the remaining options in half each step, it takes only a small number of steps even for large lists. Describe the time complexity of binary search and what it means in practice.",
+      "durationSeconds": 12,
+      "imagePath": "runs/<runId>/storyboard_images/frame-4.png"
+    }
+  ]
+}

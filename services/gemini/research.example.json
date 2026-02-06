@@ -1,0 +1,54 @@
+{
+  "input": {
+    "topic": "Binary search",
+    "targetAudience": "beginner",
+    "desiredDurationMinutes": 6
+  },
+  "output": {
+    "topicSummary": "Binary search is a method for finding a target value in a sorted list by repeatedly checking the middle element and narrowing the search range to the half that could contain the target.",
+    "learningObjectives": [
+      "Explain why binary search requires sorted data",
+      "Trace binary search step-by-step on a small example",
+      "Describe the time complexity of binary search and what it means in practice"
+    ],
+    "prerequisites": [
+      "Understanding of arrays or lists",
+      "Basic comparison operations (less than, greater than, equal)"
+    ],
+    "coreConcepts": [
+      {
+        "name": "Sorted input requirement",
+        "explanation": "Binary search relies on the ability to discard half of the remaining elements based on whether the target is less than or greater than the middle element. This only works correctly when the data is sorted.",
+        "importance": "Without sorted data, the half you discard might contain the target, making the algorithm incorrect."
+      },
+      {
+        "name": "Search interval (low/high pointers)",
+        "explanation": "The algorithm maintains a current range where the target could be (often tracked by indices like low and high). Each step shrinks this range.",
+        "importance": "The shrinking interval is what guarantees the algorithm finishes quickly and helps avoid off-by-one errors."
+      },
+      {
+        "name": "Midpoint selection and narrowing",
+        "explanation": "At each step, compute the midpoint of the current interval, compare it to the target, and keep only the half that can still contain the target.",
+        "importance": "This is the core mechanic that gives binary search its logarithmic performance."
+      },
+      {
+        "name": "Time complexity intuition (logarithmic)",
+        "explanation": "Because the remaining search space is cut roughly in half each step, the number of steps grows slowly even as the list size grows.",
+        "importance": "Understanding this explains why binary search is much faster than linear search on large sorted datasets."
+      }
+    ],
+    "commonMisconceptions": [
+      "Binary search works on unsorted lists",
+      "You must check every element to be sure a value is not present",
+      "The midpoint should always be computed as (low + high) / 2 without considering overflow in some languages"
+    ],
+    "realWorldIntuition": "Imagine looking up a name in a printed phone book: you open it near the middle, see whether the name you want is alphabetically before or after that page, and then repeat with the remaining half.",
+    "recommendedFlow": [
+      "State the problem: find a target in a sorted list",
+      "Introduce the key idea: check the middle, discard half",
+      "Walk through a concrete example with low/high/mid",
+      "Discuss what happens when the target is found vs not found",
+      "Summarize performance and the sorted-data requirement"
+    ]
+  }
+}

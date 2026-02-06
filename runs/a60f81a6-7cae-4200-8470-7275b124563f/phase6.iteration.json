@@ -1,0 +1,11 @@
+{
+  "changeLog": [
+    "Frame 1: Replaced static text description with a VGroup containing a shelf, books, and stick figures; added book swapping animation.",
+    "Frame 2: Replaced text lists with a NumberLine and two Arrow pointers (i, j); added animation of nested loops with a spinning clock to show inefficiency.",
+    "Frame 3: Replaced text descriptions with a NumberLine and two colored Triangle pointers; added smooth linear scanning animation.",
+    "Frame 4: Replaced text descriptions with a visual array (Squares) and Arrow pointers; added animation of pointers converging from opposite ends.",
+    "Frame 5: Replaced text descriptions with a Circle track and two Dot indicators; added animation of dots rotating at different speeds to simulate tortoise and hare.",
+    "Frame 6: Replaced text descriptions with Rectangles representing memory usage (side-by-side comparison of O(N) vs O(1) visuals).",
+    "Frame 7: Replaced text descriptions with geometric icons representing time complexity, space complexity, and common misconceptions."
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "changeLog": [
+    "Added 'import numpy as np' for logarithmic calculations.",
+    "Frame 1: Adjusted overall timing for the frame to be approximately 10 seconds. The initial fade-ins and final text fade-ins now have a run_time of 0.5 seconds, and the final self.wait() is reduced to 1 second.",
+    "Frame 1: Reworked the 'Linear Search' arrow and box checking animation. The arrow now points from the top of each box and moves sequentially, highlighting each box in yellow and then unhighlighting it in blue. A clock updater is used for continuous clock hand rotation throughout this 8-second sequence.",
+    "Frame 2: Adjusted overall timing for the frame to be approximately 12 seconds. Initial fade-ins and final text fade-ins now have a run_time of 0.5 seconds, and the final self.wait() is reduced to 7 seconds.",
+    "Frame 2: Changed the array sorting animation from fading out an unsorted array and fading in a new sorted one to a visual 'Transform' animation. The individual boxes from the initial jumbled state are now animated to move to their correct sorted positions, creating a 'snap' effect.",
+    "Frame 3: Adjusted overall timing for the frame to be approximately 18 seconds. Most 'self.play' calls for FadeIn/FadeOut/Transform/GrowFromCenter now have a run_time of 0.5 seconds to speed up transitions, and the final self.wait() is adjusted to 6.25 seconds.",
+    "Frame 3: Modified the 'discarding' animation during binary search. Instead of individual boxes slowly fading to gray, a VGroup of boxes to be discarded is created, and then a single 'FadeOut' animation is applied to this VGroup, visually removing the elements from the search space with varying run_times (1.5s, 1s, 0.75s) based on the number of elements being discarded.",
+    "Frame 4: Adjusted overall timing for the frame to be approximately 20 seconds. Most 'self.play' calls for FadeIn/Create/Write now have a run_time of 0.5 seconds to speed up transitions, and the final self.wait() is adjusted to 5 seconds.",
+    "Frame 4: Corrected the `update_binary_steps` function. It now accurately calculates and displays the number of steps for binary search using `np.log2(actual_n)` (with a minimum of 1 step), aligning with the O(log n) complexity and the voiceover's mention of '~20 steps' for large N."
+  ]
+}

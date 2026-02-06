@@ -1,0 +1,31 @@
+Frame 1: Definition of Contiguous Subarray
+To solve this problem, you first need to understand the definition of a contiguous subarray. This simply means a sequence of numbers sitting next to each other in the list, without any gaps.
+
+Frame 2: The Problem Statement
+Once we know the rules, our goal is to recognize the Maximum Subarray Sum problem. We are looking for the specific slice of the array that adds up to the highest possible value.
+
+Frame 3: Naive Approach vs. Reality
+You might think, 'Why not just add all the positive numbers?' We can't do that because of the gaps. We are forced to decide if the negative numbers in between are worth tolerating to connect the positive ones.
+
+Frame 4: Intuition: The Happiness Meter
+Imagine this like a happiness meter. If a bad streak drops your overall mood below zero, you don't carry that negativity forward. You mentally reset to neutral to see if the next streak will be better.
+
+Frame 5: Core Logic: The Greedy Reset
+This is Kadane's Algorithm. You must grasp the 'greedy' logic of resetting a running sum when it becomes negative. A negative running sum will only decrease the value of whatever comes next, so we discard it.
+
+Frame 6: Manual Walkthrough - Part 1
+Let's calculate the maximum sum of a simple array manually. We start with negative 2. That's negative, so we reset our current sum to zero immediately.
+
+Frame 7: Manual Walkthrough - Part 2
+Next is 1. Current sum is 1, which is our new max. Then comes negative 3. Our current sum drops to negative 2. Again, we reset to zero. We don't want that negative baggage.
+
+Frame 8: Manual Walkthrough - Part 3 (The Peak)
+Now the good part. We hit 4. Add negative 1, we have 3. Add 2, we have 5. Add 1, we have 6. We keep updating our 'Max So Far' because this streak is the best we've seen.
+
+Frame 9: Manual Walkthrough - Conclusion
+Finally, the negative 5 drops us down, and the 4 brings us back up, but neither beats our record of 6. We scanned the list just once, making this an extremely efficient solution.
+
+Understand the definition of a contiguous subarray
+Recognize the Maximum Subarray Sum problem
+Grasp the 'greedy' logic of resetting a running sum when it becomes negative
+Calculate the maximum sum of a simple array manually

@@ -1,0 +1,60 @@
+{
+  "issues": [
+    {
+      "frameId": 1,
+      "type": "timing",
+      "description": "The frame's actual duration (10s animation + text fade-in + 10s wait) significantly exceeds the storyboard's intended 10 seconds, leading to an overly long pause at the end of the frame.",
+      "severity": "high",
+      "suggestedFix": "Adjust the `self.wait()` duration to account for the `run_time` of preceding animations within the frame, ensuring the total frame time aligns with the storyboard's `durationSeconds`."
+    },
+    {
+      "frameId": 1,
+      "type": "pedagogical",
+      "description": "The visual element 'An arrow labeled 'Linear Search' moves painstakingly from left to right, checking every single box' is not fully represented. The arrow moves past the boxes but does not visually indicate 'checking' (e.g., by highlighting the current box), which reduces clarity on the 'painstaking' nature of linear search.",
+      "severity": "medium",
+      "suggestedFix": "Enhance the arrow animation to include a visual cue (e.g., a momentary highlight, color change, or pulse) on each box as the arrow 'checks' it, reinforcing the 'one by one' aspect of linear search."
+    },
+    {
+      "frameId": 2,
+      "type": "timing",
+      "description": "The frame's actual duration (2s animation for warning + text fades + 12s wait) exceeds the storyboard's intended 12 seconds, resulting in a prolonged pause after the main visual content has been presented.",
+      "severity": "high",
+      "suggestedFix": "Modify the `self.wait()` duration to ensure the cumulative animation and waiting time matches the `durationSeconds` specified in the storyboard."
+    },
+    {
+      "frameId": 2,
+      "type": "visual",
+      "description": "The storyboard specifies 'The jumbled array from Frame 1 vividly snaps into perfect ascending order,' but the code instead fades out the old array and fades in a completely new, sorted array. This misses the visual impact of the 'snap' and transformation of the existing elements.",
+      "severity": "medium",
+      "suggestedFix": "Implement a 'Transform' animation or a series of 'MoveTo' animations to rearrange the boxes from the previous unsorted state into the new sorted order, instead of replacing them."
+    },
+    {
+      "frameId": 3,
+      "type": "timing",
+      "description": "The binary search steps, particularly the discarding of elements (run_time=0.2 per box), appear too fast given the voiceover's intent to explain 'repeatedly splitting the search space'. This quick pacing is then followed by a very long `self.wait(18)` after the entire search concludes, creating an uneven pace.",
+      "severity": "high",
+      "suggestedFix": "Adjust the `run_time` for individual box discarding animations to allow for clearer perception of each step. Redistribute the total `durationSeconds` more evenly between the active animation phases and the final pause, ensuring the overall frame duration matches 18 seconds."
+    },
+    {
+      "frameId": 3,
+      "type": "visual",
+      "description": "The storyboard indicates 'the entire left half (indices 0-7) turns gray and fades out instantly,' but the implementation only sets the color to gray and opacity to 0.3. This means elements are still visually present, rather than truly 'fading out' and being removed from the active search space.",
+      "severity": "low",
+      "suggestedFix": "Use a `FadeOut` animation or `Remove()` for the discarded elements to visually emphasize their removal from consideration, aligning with the 'fades out' intent."
+    },
+    {
+      "frameId": 4,
+      "type": "timing",
+      "description": "The frame's actual duration (3s graph creation + 10s N animation + text fade-in + 20s wait) greatly exceeds the storyboard's intended 20 seconds, resulting in a substantial amount of empty screen time at the end.",
+      "severity": "high",
+      "suggestedFix": "Recalculate the `self.wait()` duration to ensure the combined time of all animations and the final pause aligns with the `durationSeconds` from the storyboard."
+    },
+    {
+      "frameId": 4,
+      "type": "clarity",
+      "description": "The `update_binary_steps` function for the 'Binary: 0 steps' on-screen text incorrectly calculates the number of steps as approximately 0.004, rather than the intended '~20 steps' as specified in both the `onScreenText` and `voiceoverScript`. This misrepresents the algorithm's efficiency.",
+      "severity": "high",
+      "suggestedFix": "Correct the logic within the `update_binary_steps` updater function to accurately display '~20 steps' for binary search as N approaches 1,000,000, aligning with the pedagogical goal."
+    }
+  ]
+}
