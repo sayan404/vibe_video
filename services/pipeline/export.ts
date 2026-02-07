@@ -494,9 +494,9 @@ export async function runPhase(runId: string, phase: ExportPhaseId): Promise<Pip
 
 export async function runAll(runId: string): Promise<PipelineRunState> {
   // Run through all phases in order. Each phase persists artifacts.
-  // await runPhase(runId, "phase1_research");
-  // await runPhase(runId, "phase2_storyboard");
-  // await runPhase(runId, "phase3_manim_codegen");
+  await runPhase(runId, "phase1_research");
+  await runPhase(runId, "phase2_storyboard");
+  await runPhase(runId, "phase3_manim_codegen");
   await runPhase(runId, "phase4_manim_render");
   await runPhase(runId, "phase5_video_critique");
   await runPhase(runId, "phase6_iteration"); // may set finalManimCodePath
