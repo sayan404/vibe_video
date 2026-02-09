@@ -40,7 +40,6 @@ export default function HomePage() {
             fontWeight: 700,
             marginBottom: 24,
             border: "1px solid rgba(168, 85, 247, 0.2)",
-            animation: "float 4s ease-in-out infinite"
           }}>
             Powered by Gemini 3
           </div>
@@ -110,7 +109,7 @@ export default function HomePage() {
             { title: "Professional Export", desc: "Get studio-quality MP4 exports ready for YouTube, Education, or Social Media.", icon: "🎬" }
           ].map((f, i) => (
             <div key={i} className="glass" style={{ padding: 32, borderRadius: 24, transition: "transform 0.3s" }}>
-              <div style={{ fontSize: 32, marginBottom: 16, animation: `float ${3 + i}s ease-in-out infinite`, display: "inline-block" }}>{f.icon}</div>
+              <div style={{ fontSize: 32, marginBottom: 16, display: "inline-block" }}>{f.icon}</div>
               <h3 style={{ fontSize: 20, marginBottom: 12 }}>{f.title}</h3>
               <p style={{ color: "#888", lineHeight: 1.6, margin: 0 }}>{f.desc}</p>
             </div>
