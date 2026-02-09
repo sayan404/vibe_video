@@ -202,10 +202,26 @@ export async function runManimRenderExecutor(
 
       return meta;
     } catch (e) {
+      console.log("MANIM_RENDER_INVALID_PAYLOAD ------ start");
+      console.log(e);
+      console.log(rawStdout);
+      console.log(rawStderr);
+      console.log(exitCode);
+      console.log(timedOut);
+      console.log("MANIM_RENDER_INVALID_PAYLOAD ------ end");
       // If stdout isn't valid JSON, fall back to including stderr/stdout context.
-      lastError = new Error(
-        `MANIM_RENDER_INVALID_PAYLOAD: ${String(e)}\nstdout:\n${rawStdout}\nstderr:\n${rawStderr}`.trim()
-      );
+      let errorMessage = `MANIM_RENDER_INVALID_PAYLOAD: ${String(e)}\nstdout:\n${rawStdout}\nstderr:\n${rawStderr}`.trim();
+
+      // Detection for missing FFmpeg or LaTeX (WinError 2)
+      if (errorMessage.includes("WinError 2") || errorMessage.includes("FileNotFoundError") || errorMessage.includes("file not found")) {
+        if (errorMessage.includes("tex_file_writing.py") || errorMessage.includes("compile_tex")) {
+          errorMessage += "\n\n[DIAGNOSTIC] LaTeX (MikTeX/TeX Live) is likely missing. Manim requires LaTeX for some components (MathTex, Tex, NumberLine labels).\n[FIX] Please either install MikTeX or ensure your script ONLY uses 'Text' (Pango) objects. Use 'label_constructor=Text' for NumberLine.";
+        } else {
+          errorMessage += "\n\n[DIAGNOSTIC] FFmpeg is likely missing from your system PATH. Manim requires FFmpeg for final video assembly.\n[FIX] Please run 'winget install ffmpeg' in your terminal and RESTART your terminal/IDE.";
+        }
+      }
+
+      lastError = new Error(errorMessage);
       if (attempt < retries) continue;
       throw lastError;
     }

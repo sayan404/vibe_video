@@ -6,12 +6,14 @@ import { z } from "zod";
 import { createTwoFilesPatch } from "diff";
 import { VideoCritiqueOutputSchema, type VideoCritiqueOutput } from "../critique/critique.js";
 import { StoryboardOutputSchema } from "../nanobanana/storyboard.js";
+import { normalizeToNoTex } from "../utils/manim.js";
 
 export const IterationInputSchema = z
   .object({
     originalManimCode: z.string().min(1),
     critique: VideoCritiqueOutputSchema,
-    storyboard: StoryboardOutputSchema
+    storyboard: StoryboardOutputSchema,
+    compilationError: z.string().optional()
   })
   .strict();
 
@@ -69,7 +71,8 @@ function fillTemplate(template: string, input: IterationInput): string {
   return template
     .replaceAll("{{originalManimCode}}", input.originalManimCode)
     .replaceAll("{{critiqueJson}}", JSON.stringify(input.critique, null, 2))
-    .replaceAll("{{storyboardDescription}}", frameDescriptions);
+    .replaceAll("{{storyboardDescription}}", frameDescriptions)
+    .replaceAll("{{compilationError}}", input.compilationError ? `\nCRITICAL FIX: The previous code failed to compile with this error:\n${input.compilationError}\n\nYou MUST fix this error while also addressing the critique.` : "");
 }
 
 function stripCodeFences(text: string): string {
@@ -288,7 +291,7 @@ function parseStrictJson(text: string): unknown {
 
 function splitIntoFrameBlocks(code: string): Array<{ frameId: number; headerLine: string; block: string }> {
   const lines = code.split(/\r?\n/);
-  const frameHeaderRe = /^\s*#\s*Frame\s+(\d+)\s*:\s*(.+)\s*$/;
+  const frameHeaderRe = /^\s*#\s*Frame\s+(\d+)\s*:?\s*(.*)$/i;
 
   const indices: Array<{ idx: number; frameId: number; headerLine: string }> = [];
   for (let i = 0; i < lines.length; i++) {
@@ -323,18 +326,27 @@ function collectFrameMappingCommentErrors(original: string, updated: string): st
     return errors;
   }
   if (next.length !== orig.length) {
-    errors.push(`Frame marker count changed (original=${orig.length}, updated=${next.length}).`);
+    let msg = `Frame marker count changed (original=${orig.length}, updated=${next.length}). You MUST include all ${orig.length} markers precisely as they appeared in the original code.`;
+    if (next.length === 0) {
+      msg += "\n[HINT] You omitted the '# Frame N: Title' comments. These are required to map code to storyboard frames.";
+    }
+    msg += `\nRequired markers: ${orig.map(o => o.headerLine).join(', ')}`;
+    errors.push(msg);
     return errors;
   }
 
   for (let i = 0; i < orig.length; i++) {
     const a = orig[i]!;
-    const b = next[i]!;
+    const b = next[i];
+    if (!b) {
+      errors.push(`Missing frame marker for frameId=${a.frameId}.`);
+      continue;
+    }
     if (a.frameId !== b.frameId) {
       errors.push(`Frame order/id changed at index=${i} (original frameId=${a.frameId}, updated frameId=${b.frameId}).`);
     }
     if (a.headerLine !== b.headerLine) {
-      errors.push(`Frame mapping comment changed for frameId=${a.frameId}.`);
+      errors.push(`Frame mapping comment changed for frameId=${a.frameId}. Expected: "${a.headerLine}", Found: "${b.headerLine}"`);
     }
   }
   return errors;
@@ -418,7 +430,7 @@ function normalizeWaitLinesToOriginalByFrame(original: string, updated: string):
 
   // Build line ranges for the UPDATED code so we can surgically replace only inside each frame block.
   const updatedLines = updated.split(/\r?\n/);
-  const frameHeaderRe = /^\s*#\s*Frame\s+(\d+)\s*:\s*(.+)\s*$/;
+  const frameHeaderRe = /^\s*#\s*Frame\s+(\d+)\s*:?\s*(.*)$/i;
   const indices: Array<{ idx: number; frameId: number }> = [];
   for (let i = 0; i < updatedLines.length; i++) {
     const m = frameHeaderRe.exec(updatedLines[i] ?? "");
@@ -488,24 +500,6 @@ function normalizeWaitLinesToOriginalByFrame(original: string, updated: string):
   return updatedLines.join("\n");
 }
 
-function normalizeNumberLineToNoTex(updated: string): string {
-  // Manim NumberLine number labels default to TeX/MathTex in many configs (requires LaTeX installed).
-  // For Windows setups without LaTeX, force Pango Text labels.
-  const lines = updated.split(/\r?\n/);
-  const out: string[] = [];
-  for (const line of lines) {
-    if (line.includes("NumberLine(") && !line.includes("label_constructor=")) {
-      if (line.includes("include_numbers=")) {
-        out.push(line.replace("NumberLine(", "NumberLine(label_constructor=Text, "));
-      } else {
-        out.push(line.replace("NumberLine(", "NumberLine(include_numbers=True, label_constructor=Text, "));
-      }
-      continue;
-    }
-    out.push(line);
-  }
-  return out.join("\n");
-}
 
 function restoreNonCritiquedFrames(
   original: string,
@@ -596,6 +590,8 @@ ${headerList}
 
 If you previously failed validation, LOOK AT THE ERRORS above and fix them specifically. 
 If you missed frame markers, ENSURE you include them exactly as listed in step 3.
+
+YOU MUST INCLUDE THE COMMENTS # Frame 1:, # Frame 2:, ETC. OR THE CODE WILL BE REJECTED.
 If you changed durations, RESTORE the original self.wait(...) values exactly.
 `;
 }
@@ -674,7 +670,7 @@ export async function runIterationEngine(
       const parsed = parseStrictJson(modelText);
       const out = IterationOutputSchema.parse(parsed);
 
-      const normalizedUpdatedCode = normalizeNumberLineToNoTex(
+      const normalizedUpdatedCode = normalizeToNoTex(
         normalizeWaitLinesToOriginalByFrame(
           input.originalManimCode,
           normalizeFrameHeaderLinesToOriginal(input.originalManimCode, out.updatedCode)

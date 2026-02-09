@@ -45,7 +45,14 @@ export const VideoCritiqueOutputSchema = z
           frameId: z.number().int().positive(),
           type: z.enum(["timing", "clarity", "visual", "pedagogical"]),
           description: z.string().min(1),
-          severity: z.enum(["low", "medium", "high"]),
+          severity: z.preprocess((val) => {
+            if (typeof val !== "string") return "medium";
+            const s = val.toLowerCase();
+            if (s === "low" || s === "medium" || s === "high") return s;
+            if (s.includes("crit") || s.includes("urgent") || s.includes("major")) return "high";
+            if (s.includes("minor")) return "low";
+            return "medium";
+          }, z.enum(["low", "medium", "high"])),
           suggestedFix: z.string().min(1)
         })
         .strict()

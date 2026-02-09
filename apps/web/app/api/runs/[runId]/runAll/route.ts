@@ -9,7 +9,16 @@ export async function POST(
   { params }: { params: Promise<{ runId: string }> }
 ) {
   const { runId } = await params;
-  const run = await runAll(runId);
-  return NextResponse.json({ run });
+
+  // Start the generation process in the background
+  runAll(runId).catch(err => {
+    console.error(`[API/runAll] Background generation failed for ${runId}:`, err);
+  });
+
+  return NextResponse.json({
+    ok: true,
+    message: "Generation started in background",
+    runId
+  });
 }
 

@@ -8,18 +8,34 @@ STRICT RULES:
   - Escape quotes inside the code as `\\\"`
 - IMPORTANT to avoid JSON breakage: in the Python code you write, prefer SINGLE QUOTES for string literals
   (e.g. `Text('Air')` not `Text("Air")`) unless you need an apostrophe.
+
+- **CRITICAL: FRAME MARKERS (NON-NEGOTIABLE):**
+  - YOU MUST PRESERVE EVERY SINGLE '# Frame N: ...' COMMENT LINE.
+  - If the original code has 10 markers, the updated code MUST have those same 10 markers in the same order.
+  - DO NOT omit them. DO NOT renumber them. DO NOT change their labels.
+  - If you omit these markers, your response will be REJECTED and you will be forced to retry.
+  - Example of what MUST be in the code:
+    # Frame 1: Introduction
+    self.play(...)
+    self.wait(5)
+    # Frame 2: Step one
+    ...
+
+- **CRITICAL: FIXING OVERLAP & PERSISTENCE:**
+  - If the critique mentions "overlap", "mobjects not removed", or "persistence", ENSURE you add a `FadeOut` or `self.remove` call for the offending objects from the previous frame.
+
+- **CRITICAL: VISUAL FIDELITY:**
+  - If the critique says a visual element is missing, you MUST implement it using Manim shapes and `Text`. 
+
 - No new features beyond the critique.
 - Only change code where critique exists, while referencing the 'storyboardDescription' to ensure the fix matches the original visual intent.
 - You MUST NOT change the total duration (sum of self.wait() calls) for any frame.
-- Preserve frame mapping comments and order:
-  - Keep every line that starts with: "# Frame <N>:"
-  - Do not renumber frames; do not reorder frames.
-  - If you omit these markers, your response will be REJECTED.
+  **CRITICAL:** Every frame segment MUST end with a clear `self.wait(<duration>)` line.
 - No restructuring unless required by the critique:
   - Keep the same class name and construct() structure.
 - CRITICAL: Always use parentheses for getter methods like .get_center(), .get_top(), .get_bottom(), etc.
-  - WRONG: .move_to(mob.get_center)
-  - CORRECT: .move_to(mob.get_center())
+- RATE FUNCTIONS: Only use standard Manim rate functions (e.g., `smooth`, `linear`, `ease_out_cubic`).
+- DO NOT USE MathTex or Tex. ALWAYS use Text(...) for any labels, subtitles, or mathematical expressions.
 
 INPUTS:
 - originalManimCode: a full Python script string
@@ -44,3 +60,5 @@ critiqueJson:
 
 storyboardDescription:
 {{storyboardDescription}}
+
+{{compilationError}}

@@ -29,7 +29,7 @@ venv/
 .venv/
 pip-log.txt
 pip-delete-this-directory.txt
-
+runs/
 # # Manim / Project Output
 # runs/*__pycache__
 # media/

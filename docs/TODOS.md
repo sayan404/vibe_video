@@ -31,7 +31,7 @@ This document outlines the strategy, priorities, and implementation details for 
             - Generate **public URL** for the video.
             - Store `s3VideoUrl` in run state.
 
-### 2. Basic Video Editor (🔥 High Priority) [Shivam]
+### 2. Basic Video Editor (🔥 High Priority)
 **Objective:** Allow users to view the result and make code-level adjustments directly in the app.
 
 - [ ] **Implementation:**
@@ -49,7 +49,7 @@ This document outlines the strategy, priorities, and implementation details for 
             3. Trigger re-render (Phase 4).
             4. Return updated status.
 
-### 3. UI Beautification (✨ Medium Priority) [Shivam]
+### 3. UI Beautification (✨ Medium Priority)
 **Objective:** Make the tool look "Hackathon Ready" and premium.
 
 - [ ] **Implementation:**
@@ -60,29 +60,30 @@ This document outlines the strategy, priorities, and implementation details for 
 
 ---
 
-## 🚀 Phase 2: Optimizations & AI Quality (Day 1.5 - 2) [Sayan]
+## 🚀 Phase 2: Optimizations & AI Quality (Day 1.5 - 2)
 
 **Goal:** Improve the "Magic" factor of the generated content.
 
-### 4. NanoBanana Sketches (✏️ Medium Priority)
+### 4. NanoBanana Sketches (✏️ Medium Priority) ✅
 **Objective:** Generate "hand-drawn" looking images to match Manim's whiteboard aesthetic.
 
-- [ ] **Implementation:**
-    - **Target File:** `services/nanobanana/prompts/storyboard.ts`
+- [x] **Implementation:**
+    - **Target File:** `services/nanobanana/storyboard.ts` - `buildFrameImagePrompt()`
     - **Prompt Engineering:**
         - Add style instruction: *"Style requirement: Simple, hand-drawn whiteboard sketch. Black strokes on white background. Minimalist. Red accents only."*
         - Add annotation instruction: *"Include small handwritten labels or arrows where appropriate."*
 
-### 5. Intermediate Animation Phase (Phase 3.5)
-**Objective:** Handle complex scenes by breaking them down before main generation.
+### 5. Intermediate Animation Phase (Phase 3.5) ✅
+**Objective:** Identify the complex scenes from the past phase data and Handle those scenes by breaking them down before main generation.
 
-- [ ] **Implementation:**
+- [x] **Implementation:**
+    - **New File:** `services/gemini/complexAnimationGenerator.ts` - Heuristics-based scene identification
     - **Target File:** `services/pipeline/export.ts`
     - **New Phase:** `phase3_5_complex_anim`
     - **Logic:**
-        - Identify "Complex" scenes in storyboard.
-        - Generate standalone Manim snippets for these scenes.
-        - Pass snippets as context to Phase 3 generator.
+        - Identify "Complex" scenes via heuristics (visual count, duration, keywords, animation intents)
+        - Generate standalone Manim snippets for these scenes
+        - Pass snippets as context to Phase 3 generator via `snippetsContext` option
 
 ---
 

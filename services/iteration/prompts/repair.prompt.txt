@@ -13,6 +13,11 @@ INSTRUCTIONS:
 4. Ensure the fix preserves the original logic and structure as much as possible.
 5. Do NOT remove specific frame tracking comments (like "# Frame N: ...").
 6. Return the FULL fixed Python script.
+7. **MANIM GOTCHAS:**
+    - Always use parentheses for getters (e.g., `obj.get_center()`, `obj.get_top()`).
+    - Only use standard rate functions (e.g., `smooth`, `linear`, `there_and_back`, `slow_into`, `ease_out_cubic`).
+    - NEVER use `MathTex` or `Tex`. Convert them to `Text` if found.
+    - Ensure `from manim import *` is present at the top.
 
 OUTPUT FORMAT:
 Return a JSON object with the following structure:

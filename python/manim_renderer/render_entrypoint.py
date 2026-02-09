@@ -26,9 +26,12 @@ def _parse_storyboard_metadata_from_script(script_text: str) -> Dict[str, Any]:
     - Each frame contains one or more `self.wait(<durationSeconds>)` calls with numeric literals.
       If multiple waits appear within a frame, their durations are summed for metadata purposes.
     """
-    frame_re = re.compile(r"^\s*#\s*Frame\s+(\d+)\s*:\s*(.+?)\s*$")
+    # Relaxed frame marker regex to match manimGenerator.ts and be more robust.
+    # Matches: # Frame 1: Title, # Frame 1:Title, # Frame 1 Title
+    frame_re = re.compile(r"^\s*#\s*Frame\s+(\d+)\s*:?\s*(.*)$")
     # Allow optional trailing inline comments after the wait call.
-    wait_re = re.compile(r"^\s*self\.wait\(\s*([0-9]+(?:\.[0-9]+)?)\s*\)\s*(?:#.*)?$")
+    # Relaxed wait regex: allow self.wait(5), self.wait(5.0), self.wait(5) # comment, etc.
+    wait_re = re.compile(r"^\s*self\.wait\(\s*([0-9]+(?:\.[0-9]+)?)\s*\)")
 
     frames: List[Dict[str, Any]] = []
     current: Optional[Dict[str, Any]] = None
@@ -66,7 +69,11 @@ def _parse_storyboard_metadata_from_script(script_text: str) -> Dict[str, Any]:
                 f"Non-contiguous frameId sequence: expected {expected}, got {f['frameId']}"
             )
         if f["durationSeconds"] <= 0:
-            raise ValueError(f"Non-positive durationSeconds for frameId={f['frameId']}")
+            raise ValueError(
+                f"Non-positive durationSeconds for frameId={f['frameId']}. "
+                f"Found no literal 'self.wait(N)' calls for this frame. "
+                "Ensure each frame segment ends with a top-level self.wait() call."
+            )
 
     total = float(sum(f["durationSeconds"] for f in frames))
 

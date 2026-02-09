@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { GoogleGenAI } from "@google/genai";
 import { z } from "zod";
 import { StoryboardOutputSchema, type StoryboardOutput } from "../nanobanana/storyboard.js";
+import { normalizeToNoTex } from "../utils/manim.js";
 
 /**
  * Phase 3: Manim Code Generator (Gemini 3)
@@ -54,6 +55,11 @@ export interface ManimGeneratorOptions {
    * Defaults to 3.
    */
   maxRetries?: number;
+  /**
+   * Pre-generated animation snippets from Phase 3.5 for complex scenes.
+   * These will be injected into the prompt as context.
+   */
+  snippetsContext?: string;
 }
 
 async function loadPromptTemplate(path: string): Promise<string> {
@@ -66,8 +72,15 @@ function defaultPromptPath(): string {
   return path.join(__dirname, "prompts", "manimGenerator.prompt.txt");
 }
 
-function fillTemplate(template: string, storyboard: ManimGeneratorInput): string {
-  return template.replaceAll("{{storyboardJson}}", JSON.stringify(storyboard, null, 2));
+function fillTemplate(template: string, storyboard: ManimGeneratorInput, snippetsContext?: string): string {
+  let result = template.replaceAll("{{storyboardJson}}", JSON.stringify(storyboard, null, 2));
+  // Inject snippets context if available
+  if (snippetsContext) {
+    result = result.replaceAll("{{snippetsContext}}", snippetsContext);
+  } else {
+    result = result.replaceAll("{{snippetsContext}}", "");
+  }
+  return result;
 }
 
 function stripCodeFences(text: string): string {
@@ -78,27 +91,50 @@ function stripCodeFences(text: string): string {
 
 function collectFrameMappingErrors(script: string, storyboard: ManimGeneratorInput): string[] {
   const errors: string[] = [];
+
+  // Use a more relaxed regex that allows indentation and flexible spacing
+  const frameMarkerRe = /^\s*#\s*Frame\s+(\d+)\s*:?\s*(.*)$/gm;
+  const scriptMarkers: { id: number; title: string }[] = [];
+  let match;
+  while ((match = frameMarkerRe.exec(script)) !== null) {
+    scriptMarkers.push({ id: Number(match[1]), title: match[2].trim() });
+  }
+
+  const scriptFrameIds = scriptMarkers.map(m => m.id);
+  const storyboardFrameIds = new Set(storyboard.map(f => f.frameId));
+
+  // Check all storyboard frames have corresponding markers
   for (const frame of storyboard) {
-    const required = `# Frame ${frame.frameId}: ${frame.sceneTitle}`;
-    if (!script.includes(required)) {
-      errors.push(`Missing comment: ${required}`);
+    if (!scriptFrameIds.includes(frame.frameId)) {
+      errors.push(`Missing frame marker: # Frame ${frame.frameId}: ${frame.sceneTitle}`);
     }
   }
+
+  // Check for extra frames
+  const extraFrames = scriptFrameIds.filter(id => !storyboardFrameIds.has(id));
+  if (extraFrames.length > 0) {
+    errors.push(`Script has extra frame marker(s) not in storyboard: Frame ${extraFrames.join(", Frame ")}`);
+  }
+
+  if (scriptFrameIds.length !== storyboard.length) {
+    errors.push(`Frame count mismatch: storyboard has ${storyboard.length} frames, script has ${scriptFrameIds.length} frame markers`);
+  }
+
   return errors;
 }
 
 function formatDurationLiteral(seconds: number): string {
-  // Match as written in storyboard (allow integer or decimal); keep stable string.
-  return Number.isInteger(seconds) ? String(seconds) : String(seconds);
+  return String(seconds);
 }
 
 function collectFrameDurationErrors(script: string, storyboard: ManimGeneratorInput): string[] {
   const errors: string[] = [];
   for (const frame of storyboard) {
     const dur = formatDurationLiteral(frame.durationSeconds);
-    const required = `self.wait(${dur})`;
-    if (!script.includes(required)) {
-      errors.push(`Missing wait statement for Frame ${frame.frameId}: ${required}`);
+    // Regex allows indentation and spaces: self.wait( 6 )
+    const waitRe = new RegExp(`self\\.wait\\(\\s*${dur}(\\.0*)?\\s*\\)`, 'g');
+    if (!waitRe.test(script)) {
+      errors.push(`Missing wait statement for Frame ${frame.frameId}: self.wait(${dur})`);
     }
   }
   return errors;
@@ -149,6 +185,8 @@ async function ensureParentDir(path: string): Promise<void> {
 /**
  * Generate a Manim script with Gemini 3 from a storyboard, validate the mapping constraints,
  * and save it to python/manim_renderer/.
+ * 
+ * Assembly Phase: Takes pre-generated frame snippets and assembles them into a final Scene.
  */
 export async function runManimCodeGenerator(
   rawStoryboard: unknown,
@@ -168,7 +206,7 @@ export async function runManimCodeGenerator(
   const maxRetries = options.maxRetries ?? 3;
 
   const template = await loadPromptTemplate(promptTemplatePath);
-  let currentPrompt = fillTemplate(template, storyboard);
+  const textPrompt = fillTemplate(template, storyboard, options.snippetsContext);
 
   const ai = new GoogleGenAI({ apiKey });
 
@@ -176,12 +214,14 @@ export async function runManimCodeGenerator(
   let script: string | null = null;
 
   // Retry loop with validation feedback
+  let currentTextPrompt = textPrompt;
+
   for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    console.log(`[ManimGenerator] Attempt ${attempt}/${maxRetries}...`);
+    console.log(`[ManimGenerator] Assembly Attempt ${attempt}/${maxRetries}...`);
 
     const resp = await ai.models.generateContent({
       model,
-      contents: currentPrompt
+      contents: currentTextPrompt
     });
 
     const parts = resp.candidates?.[0]?.content?.parts ?? [];
@@ -191,7 +231,9 @@ export async function runManimCodeGenerator(
       continue;
     }
 
-    script = ManimGeneratorOutputSchema.parse(stripCodeFences(modelText));
+    const cleanedModelText = normalizeToNoTex(stripCodeFences(modelText));
+    script = ManimGeneratorOutputSchema.parse(cleanedModelText);
+    console.log("script >>>>>", script);
 
     // Validate the generated script
     const errors = validateScript(script, storyboard);
@@ -205,15 +247,35 @@ export async function runManimCodeGenerator(
     console.warn(`[ManimGenerator] Attempt ${attempt} failed validation with ${errors.length} error(s):`);
     errors.forEach((e, i) => console.warn(`  ${i + 1}. ${e}`));
 
+    // DEBUG: Log the failed script immediately so we can see it even if user aborts
+    if (script) {
+      console.warn("--- DEBUG: FAILED SCRIPT START ---");
+      console.warn(script.slice(0, 500) + (script.length > 500 ? "... [truncated]" : ""));
+      const markers = script.match(/^#\s*Frame.*$/gm);
+      console.warn("Markers found:", markers ? markers.join(", ") : "NONE");
+      console.warn("--- DEBUG: FAILED SCRIPT END ---");
+    }
+
     if (attempt < maxRetries) {
       // Provide feedback for next attempt
       const feedback = buildValidationFeedback(errors);
-      currentPrompt = fillTemplate(template, storyboard) + feedback;
+      // Re-fill template with feedback appended to system prompt or as a new user message
+      // Simple approach: Append feedback to the prompt string
+      currentTextPrompt = fillTemplate(template, storyboard, options.snippetsContext) + "\n\n" + feedback;
     }
   }
 
   // If we still have errors after all retries, throw
   if (lastErrors.length > 0) {
+    if (script) {
+      console.error("DEBUG: Failed Manim Script (Head):\n", script.slice(0, 500));
+      console.error("DEBUG: Failed Manim Script (Frame Markers):");
+      const markers = script.match(/^#\s*Frame.*$/gm);
+      console.error(markers ? markers.join("\n") : "NO MARKERS FOUND");
+    } else {
+      console.error("DEBUG: Failed Manim Script is NULL/EMPTY");
+    }
+
     throw new Error(
       `MANIM_SCRIPT_VALIDATION_FAILED after ${maxRetries} attempts:\n${lastErrors.join('\n')}`
     );
@@ -228,4 +290,3 @@ export async function runManimCodeGenerator(
 
   return { pythonScript: script, savedTo: outputPath };
 }
-

@@ -65,12 +65,12 @@ export interface StoryboardOptions {
   apiKey?: string;
   /**
    * Text model used to generate the storyboard JSON.
-   * Defaults to process.env.GEMINI_MODEL (or "gemini-2.5-flash").
+   * Defaults to process.env.GEMINI_MODEL.
    */
   reasoningModel?: string;
   /**
    * Image model used to generate per-frame images.
-   * Defaults to process.env.NANOBANANA_MODEL (or "gemini-2.5-flash-image").
+   * Defaults to process.env.NANOBANANA_MODEL.
    */
   imageModel?: string;
   /**
@@ -214,22 +214,41 @@ function normalizePath(p: string): string {
 
 function buildFrameImagePrompt(frame: StoryboardFrame): string {
   // Deterministic prompt derived solely from storyboard fields (no new content).
+  // Style: Simple, educational diagrams that are easy to recreate with Manim code.
   return [
-    "Generate a single 16:9 storyboard-style frame image (clean, readable, flat illustration).",
-    "No text artifacts or watermarks beyond what is explicitly listed in onScreenText.",
+    "Generate a single 16:9 educational diagram image.",
+    "",
+    "**SIMPLICITY REQUIREMENT (CRITICAL):**",
+    "- EXTREMELY SIMPLE diagrams that can be easily recreated with basic shapes.",
+    "- Use only: circles, rectangles, lines, arrows, and simple text labels.",
+    "- Clean white background with black outlines.",
+    "- NO complex gradients, NO 3D effects, NO realistic textures.",
+    "- NO photographs or photorealistic elements.",
+    "- Maximum 5-7 visual elements per frame.",
+    "- Each element should be clearly separated with space around it.",
+    "",
+    "**EDUCATIONAL CLARITY:**",
+    "- Layout should be logical and easy to follow.",
+    "- Use arrows to show flow, direction, or relationships.",
+    "- Label key elements with short, readable text.",
+    "- Color coding: BLACK for outlines, BLUE for highlights, RED for emphasis only.",
+    "- Think 'whiteboard diagram' - what a teacher would draw to explain a concept.",
+    "",
+    "**CODE-FRIENDLY DESIGN:**",
+    "- Design should be easily replicable using Manim primitives:",
+    "  - Circles, Rectangles, Lines, Arrows, Text",
+    "- Avoid complex curves or organic shapes.",
+    "- Grid-like or structured layouts preferred.",
     "",
     `Scene title: ${frame.sceneTitle}`,
     "",
-    "Visual elements (must be depicted):",
+    "Visual elements to depict (simplify each to basic shapes):",
     ...frame.visualElements.map((v) => `- ${v}`),
     "",
-    "On-screen text (must appear clearly):",
+    "On-screen text labels:",
     ...(frame.onScreenText.length ? frame.onScreenText.map((t) => `- ${t}`) : ["- (none)"]),
     "",
-    "Animation intent (inform composition/motion feel, but image is a single moment):",
-    frame.animationIntent,
-    "",
-    "Return an IMAGE only."
+    "Return an IMAGE only. Keep it SIMPLE and EDUCATIONAL."
   ].join("\n");
 }
 
@@ -279,7 +298,7 @@ function extForMime(mimeType: string): string {
  *
  * Environment variables:
  * - GEMINI_API_KEY: required unless provided in options
- * - NANOBANANA_MODEL: optional override (defaults to "gemini-2.5-flash-image")
+ * - NANOBANANA_MODEL: optional override
  */
 export async function runStoryboardEngine(
   rawResearchInput: unknown,
@@ -342,8 +361,8 @@ export async function runStoryboardEngine(
         const hint =
           imageModel.toLowerCase().includes("image")
             ? ""
-            : ` (hint: set NANOBANANA_MODEL to an image model like "gemini-2.5-flash-image")`;
-        throw new Error(
+            : ` (hint: set NANOBANANA_MODEL to an image model like "gemini-3-flash-image")`;
+        throw new Error(  
           `Nano Banana image response missing inline image data for frameId=${frame.frameId} using model=${imageModel}.${hint}`
         );
       }

@@ -33,7 +33,7 @@ OUTPUT SHAPE (STRICT JSON):
       "frameId": number,
       "type": "timing" | "clarity" | "visual" | "pedagogical",
       "description": string,
-      "severity": "low" | "medium" | "high",
+      "severity": "low" | "medium" | "high", // MUST be exactly one of these three strings
       "suggestedFix": string
     }
   ]
