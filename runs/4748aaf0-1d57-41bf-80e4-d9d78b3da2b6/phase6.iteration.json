@@ -1,8 +1,0 @@
-{
-  "changeLog": [
-    "Frame 1: Staggered the vertical positions of the 'Contiguous' labels to prevent visual overlap.",
-    "Frame 2: Reduced the final wait time from 12s to 7s to account for animation duration and reduce static pause.",
-    "Frame 5: Added animations of numbers falling into the 'Current Sum' bucket before the water level rises, visualizing the stream.",
-    "Frame 8: Removed the 12-second pause in the middle of the loop to allow for a smooth, rapid progression of the winning streak, adding a short pause at the end instead."
-  ]
-}
